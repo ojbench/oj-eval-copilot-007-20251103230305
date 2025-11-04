@@ -65,6 +65,8 @@ int main() {
             if (input.empty()) continue;
             processLine(input, program, state);
         } catch (ErrorException &ex) {
+            cleanupExpressionLeaks();
+            if (ex.getMessage() == "QUIT") break;
             std::cout << ex.getMessage() << std::endl;
         }
     }
@@ -97,7 +99,7 @@ void processLine(std::string line, Program &program, EvalState &state) {
 
     std::string cmd = toUpperCase(first);
     if (cmd == "QUIT") {
-        std::exit(0);
+        error("QUIT");
     } else if (cmd == "HELP") {
         return;
     } else if (cmd == "LIST") {
