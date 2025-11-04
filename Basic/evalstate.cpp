@@ -9,33 +9,42 @@
 
 #include "evalstate.hpp"
 
+EvalState::EvalState() = default;
 
-//using namespace std;
-
-/* Implementation of the EvalState class */
-
-EvalState::EvalState() {
-    /* Empty */
-}
-
-EvalState::~EvalState() {
-    /* Empty */
-}
+EvalState::~EvalState() = default;
 
 void EvalState::setValue(std::string var, int value) {
-    if(isDefined(var)) symbolTable[var] = value;
-    else symbolTable.emplace(var,value);
+    symbolTable[var] = value;
 }
 
 int EvalState::getValue(std::string var) {
-    if(isDefined(var)) return symbolTable[var];
-    else return 0;
+    if (isDefined(var)) return symbolTable[var];
+    return 0;
 }
 
 bool EvalState::isDefined(std::string var) {
-    return symbolTable.find(var)!=symbolTable.end();
+    return symbolTable.find(var) != symbolTable.end();
 }
 
 void EvalState::Clear() {
     symbolTable.clear();
 }
+
+void EvalState::setNextLine(int line) {
+    hasJump = true;
+    nextLine = line;
+}
+
+bool EvalState::hasNextLine() const { return hasJump; }
+
+int EvalState::getNextLine() const { return nextLine; }
+
+void EvalState::clearControl() {
+    hasJump = false;
+    nextLine = -1;
+    ended = false;
+}
+
+void EvalState::setEnd() { ended = true; }
+
+bool EvalState::isEnd() const { return ended; }
