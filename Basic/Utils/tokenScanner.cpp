@@ -47,15 +47,22 @@ void TokenScanner::setInput(std::string str) {
     buffer = str;
     if (isp != nullptr) delete isp;
     isp = new std::istringstream(buffer);
-    delete savedTokens;
-    savedTokens = nullptr;
+    // free saved tokens chain safely
+    while (savedTokens) {
+        StringCell *next = savedTokens->link;
+        delete savedTokens;
+        savedTokens = next;
+    }
 }
 
 void TokenScanner::setInput(std::istream &infile) {
-    if (isp != nullptr)delete isp;
+    if (isp != nullptr) delete isp;
     isp = &infile;
-    delete savedTokens;
-    savedTokens = nullptr;
+    while (savedTokens) {
+        StringCell *next = savedTokens->link;
+        delete savedTokens;
+        savedTokens = next;
+    }
 }
 
 bool TokenScanner::hasMoreTokens() {
